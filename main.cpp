@@ -14,6 +14,10 @@ void editarTablero(vector<vector<int>> &tablero);
 void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archivo, int filas, int columnas);
 void manejarPausa(bool &enEjecucion);
 
+bool esEnteroPositivo(const std::string &entrada);
+int leerEnteroPositivo(const std::string &mensaje);
+void LimpiarPantalla();
+
 int main()
 {
 
@@ -181,3 +185,41 @@ void manejarPausa(bool &enEjecucion)
         }
     }
 }
+
+bool esEnteroPositivo(const std::string &entrada)
+{
+    // Verificar que la cadena no esté vacía y que todos sus caracteres sean dígitos
+    if (entrada.empty())
+        return false;
+    for (char c : entrada)
+    {
+        if (!std::isdigit(c))
+            return false;
+    }
+    return true;
+}
+
+int leerEnteroPositivo(const std::string &mensaje)
+{
+    std::string entrada;
+    int numero;
+
+    while (true)
+    {
+        std::cout << mensaje;
+        std::cin >> entrada;
+
+        if (esEnteroPositivo(entrada))
+        {
+            numero = std::stoi(entrada); // Convertir a entero
+            if (numero > 0)              // Verificar que sea positivo
+                return numero;
+        }
+        std::cout << "Por favor, ingrese un número entero positivo válido." << std::endl;
+    }
+}
+
+void LimpiarPantalla()
+{
+    std::cout << "\033[2J\033[1;1H" << std::flush;
+} // Limpia y posiciona el cursor
