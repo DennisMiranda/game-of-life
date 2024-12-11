@@ -95,19 +95,19 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
     }
 }
 
-void imprimirTablero(const std::vector<std::vector<int>> &tablero, int &generacion) // Corregido: Removido el punto y coma innecesario
+void imprimirTablero(const vector<vector<int>> &tablero, int &generacion) // Corregido: Removido el punto y coma innecesario
 {
     //  LimpiarPantalla();
     // system("cls"); // Limpia la consola (Windows)
-    std::cout << "Generación: " << generacion << std::endl;
+    cout << "Generación: " << generacion << endl;
 
     for (const auto &filas : tablero)
     {
         for (const auto &celulas : filas)
         {
-            std::cout << (celulas ? "■ " : ". "); // "■" para vivos, "." para muertos
+            cout << (celulas ? "■ " : ". "); // "■" para vivos, "." para muertos
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 
