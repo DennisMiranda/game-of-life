@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <conio.h> // Para kbhit() y getch()
+#include <string>
 
 using namespace std;
 
@@ -9,6 +11,12 @@ vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int 
 void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int filas, int columnas);
 void imprimirTablero(const vector<vector<int>> &tablero, int &generacion);
 void editarTablero(vector<vector<int>> &tablero);
+void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archivo, int filas, int columnas);
+void manejarPausa(bool &enEjecucion);
+
+bool esEnteroPositivo(const std::string &entrada);
+int leerEnteroPositivo(const std::string &mensaje);
+void LimpiarPantalla();
 
 int main()
 {
@@ -142,3 +150,76 @@ void editarTablero(vector<vector<int>> &tablero)
         cout << "No se pudo abrir el archivo para escribir." << endl;
     }
 }
+
+void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archivo, int filas, int columnas)
+{
+    ifstream file(archivo); // Abrimos el archivo de entrada
+    if (!file.is_open())
+    {
+        cerr << "Error al abrir el archivo." << endl;
+        return;
+    }
+
+    int x, y;
+    while (file >> x >> y)
+    { // Leemos las coordenadas de dos en dos (x, y)
+        if (x >= 0 && x < filas && y >= 0 && y < columnas)
+        {
+            tablero[x][y] = 1; // Marcamos la célula como viva
+        }
+    }
+
+    file.close(); // Cerramos el archivo
+}
+
+// Función para manejar el estado de pausa
+void manejarPausa(bool &enEjecucion)
+{
+    if (kbhit())
+    {                         // Detecta si hay una tecla presionada
+        char tecla = getch(); // Captura la tecla
+        if (tecla == 'p')
+        { // Si la tecla es 'p', cambia el estado
+            enEjecucion = !enEjecucion;
+            cout << (enEjecucion ? "Juego reanudado.\n" : "Juego en pausa. Presiona 'p' para reanudar.\n");
+        }
+    }
+}
+
+bool esEnteroPositivo(const std::string &entrada)
+{
+    // Verificar que la cadena no esté vacía y que todos sus caracteres sean dígitos
+    if (entrada.empty())
+        return false;
+    for (char c : entrada)
+    {
+        if (!std::isdigit(c))
+            return false;
+    }
+    return true;
+}
+
+int leerEnteroPositivo(const std::string &mensaje)
+{
+    std::string entrada;
+    int numero;
+
+    while (true)
+    {
+        std::cout << mensaje;
+        std::cin >> entrada;
+
+        if (esEnteroPositivo(entrada))
+        {
+            numero = std::stoi(entrada); // Convertir a entero
+            if (numero > 0)              // Verificar que sea positivo
+                return numero;
+        }
+        std::cout << "Por favor, ingrese un número entero positivo válido." << std::endl;
+    }
+}
+
+void LimpiarPantalla()
+{
+    std::cout << "\033[2J\033[1;1H" << std::flush;
+} // Limpia y posiciona el cursor
