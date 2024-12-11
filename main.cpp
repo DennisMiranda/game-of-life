@@ -4,17 +4,16 @@
 
 using namespace std;
 
-
 int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas); // Para contar vecinos vivos.
 vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int filas, int columnas);
-
 void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int filas, int columnas);
-
+void imprimirTablero(const vector<vector<int>> &tablero, int &generacion);
+void editarTablero(vector<vector<int>> &tablero);
 
 int main()
 {
 
-return 0;
+    return 0;
 }
 
 int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas)
@@ -41,7 +40,6 @@ int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, i
 
     return count;
 }
-
 
 vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int filas, int columnas)
 {
@@ -95,4 +93,52 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
         file << "--------------------------\n";
         file.close();
     }
-}    
+}
+
+void imprimirTablero(const vector<vector<int>> &tablero, int &generacion)
+{
+    //  LimpiarPantalla();
+
+    cout << "Generación: " << generacion << endl;
+
+    for (const auto &filas : tablero)
+    {
+        for (const auto &celulas : filas)
+        {
+            cout << (celulas ? "■ " : ". ");
+        }
+        cout << endl;
+    }
+}
+
+void editarTablero(vector<vector<int>> &tablero)
+{
+
+    int cantidadVivas = 0;
+
+    cout << "Ingresa la cantidad de celulas vivas: ";
+    cin >> cantidadVivas;
+
+    for (int i = 0; i < cantidadVivas; ++i)
+    {
+        int x, y;
+        cout << "Ingrese la coordenada " << i + 1 << " (x y) de la celula viva: ";
+        cin >> x >> y;
+        tablero.push_back({x, y});
+    }
+
+    ofstream archivoEditado("Coordenadas.txt");
+    if (archivoEditado.is_open())
+    {
+        for (size_t i = 0; i < tablero.size(); ++i)
+        {
+            archivoEditado << tablero[i][0] << " " << tablero[i][1] << endl;
+        }
+        archivoEditado.close();
+        cout << "\nLas coordenadas fueron guardadas en 'Coordenadas.txt'." << endl;
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo para escribir." << endl;
+    }
+}
