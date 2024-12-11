@@ -6,8 +6,9 @@ using namespace std;
 
 int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas); // Para contar vecinos vivos.
 vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int filas, int columnas);
-
 void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int filas, int columnas);
+void imprimirTablero(const std::vector<std::vector<int>> &tablero, int &generacion);
+void editarTablero(vector<vector<int>> &tablero);
 
 int main()
 {
@@ -91,5 +92,53 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
         file << "Células vivas: " << celulasvivas << endl;
         file << "--------------------------\n";
         file.close();
+    }
+}
+
+void imprimirTablero(const std::vector<std::vector<int>> &tablero, int &generacion) // Corregido: Removido el punto y coma innecesario
+{
+    //  LimpiarPantalla();
+    // system("cls"); // Limpia la consola (Windows)
+    std::cout << "Generación: " << generacion << std::endl;
+
+    for (const auto &filas : tablero)
+    {
+        for (const auto &celulas : filas)
+        {
+            std::cout << (celulas ? "■ " : ". "); // "■" para vivos, "." para muertos
+        }
+        std::cout << std::endl;
+    }
+}
+
+void editarTablero(vector<vector<int>> &tablero)
+{
+
+    int cantidadVivas = 0;
+
+    cout << "Ingresa la cantidad de celulas vivas: ";
+    cin >> cantidadVivas;
+
+    for (int i = 0; i < cantidadVivas; ++i)
+    {
+        int x, y;
+        cout << "Ingrese la coordenada " << i + 1 << " (x y) de la celula viva: ";
+        cin >> x >> y;
+        tablero.push_back({x, y}); // Guardar la coordenada en el vector
+    }
+
+    ofstream archivoEditado("Coordenadas.txt");
+    if (archivoEditado.is_open())
+    {
+        for (size_t i = 0; i < tablero.size(); ++i)
+        {
+            archivoEditado << tablero[i][0] << " " << tablero[i][1] << endl; // Guardar las coordenadas
+        }
+        archivoEditado.close(); // Cerrar el archivo
+        cout << "\nLas coordenadas fueron guardadas en 'Coordenadas.txt'." << endl;
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo para escribir." << endl;
     }
 }
