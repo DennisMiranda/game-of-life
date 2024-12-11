@@ -3,6 +3,9 @@
 #include <fstream>
 #include <conio.h> // Para kbhit() y getch()
 #include <string>
+#include <chrono>
+#include <thread>
+#include <cctype> // Para std::isdigit
 
 using namespace std;
 
@@ -13,19 +16,82 @@ void imprimirTablero(const vector<vector<int>> &tablero, int &generacion);
 void editarTablero(vector<vector<int>> &tablero);
 void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archivo, int filas, int columnas);
 void manejarPausa(bool &enEjecucion);
-
-bool esEnteroPositivo(const std::string &entrada);
-int leerEnteroPositivo(const std::string &mensaje);
+bool esEnteroPositivo(const string &entrada);
+int leerEnteroPositivo(const string &mensaje);
 void LimpiarPantalla();
 
 int main()
 {
+    bool enEjecucion = true;
+
+    int opcion = 0;
+
+    do
+    {
+        cout << "  JUEGO DE LA VIDA " << endl;
+        cout << "\n--- Menú ---\n";
+        cout << "1. Jugar Juego de la vida\n";
+        cout << "2. Personalizar Coordenadas\n";
+        cout << "3. Salir\n";
+        cout << "Seleccione una opción: ";
+        cin >> opcion;
+
+        switch (opcion)
+        {
+        case 1:
+        {
+            int generacion = 0;
+            int filas = leerEnteroPositivo("Ingrese el número de filas (entero positivo): ");
+            int columnas = leerEnteroPositivo("Ingrese el número de columnas (entero positivo): ");
+            vector<vector<int>> tablero(filas, vector<int>(columnas, 0));
+            cargarTableroDesdeArchivo(tablero, "Coordenadas.txt", filas, columnas);
+
+            while (true)
+            {
+                manejarPausa(enEjecucion);
+
+                if (!enEjecucion)
+                {
+                    this_thread::sleep_for(chrono::milliseconds(500));
+                    continue;
+                }
+                generacion++;
+                imprimirTablero(tablero, generacion);                    // Llamada a la función que imprimirá el tablero.
+                tablero = siguienteGeneracion(tablero, filas, columnas); // Llamada para calcular la siguiente generación.
+                this_thread::sleep_for(chrono::milliseconds(500));       // Pausa entre generaciones
+
+                if (generacion == 20)
+                    break;
+            }
+
+            guardarEstadisticas(generacion, tablero, filas, columnas);
+
+            break;
+        }
+        case 2:
+        {
+            int filas = leerEnteroPositivo("Ingrese el número de filas (entero positivo): ");
+            int columnas = leerEnteroPositivo("Ingrese el número de columnas (entero positivo): ");
+            vector<vector<int>> tablero(filas, vector<int>(columnas, 0));
+            editarTablero(tablero);
+
+            break;
+        }
+        case 3:
+            cout << "\nSaliendo del programa." << endl;
+            break;
+        default:
+            cout << endl;
+            cout << "La opcion ingresada no esta dentro del menu" << endl;
+            break;
+        }
+    } while (opcion != 3);
 
     return 0;
 }
 
 int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas)
-{ // para contar vecinos vivos.
+{
     int count = 0;
 
     for (int i = -1; i <= 1; i++)
@@ -51,7 +117,7 @@ int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, i
 
 vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int filas, int columnas)
 {
-    vector<vector<int>> nuevoTablero(filas, vector<int>(columnas, 0)); // Usar tamaño de tablero
+    vector<vector<int>> nuevoTablero(filas, vector<int>(columnas, 0));
 
     for (int i = 0; i < filas; ++i)
     {
@@ -105,7 +171,7 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
 
 void imprimirTablero(const vector<vector<int>> &tablero, int &generacion)
 {
-    //  LimpiarPantalla();
+    LimpiarPantalla();
 
     cout << "Generación: " << generacion << endl;
 
@@ -153,7 +219,7 @@ void editarTablero(vector<vector<int>> &tablero)
 
 void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archivo, int filas, int columnas)
 {
-    ifstream file(archivo); // Abrimos el archivo de entrada
+    ifstream file(archivo);
     if (!file.is_open())
     {
         cerr << "Error al abrir el archivo." << endl;
@@ -169,17 +235,16 @@ void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archi
         }
     }
 
-    file.close(); // Cerramos el archivo
+    file.close();
 }
 
-// Función para manejar el estado de pausa
 void manejarPausa(bool &enEjecucion)
 {
     if (kbhit())
     {                         // Detecta si hay una tecla presionada
         char tecla = getch(); // Captura la tecla
         if (tecla == 'p')
-        { // Si la tecla es 'p', cambia el estado
+        { // Si la tecla es 'p',cambia el estado
             enEjecucion = !enEjecucion;
             cout << (enEjecucion ? "Juego reanudado.\n" : "Juego en pausa. Presiona 'p' para reanudar.\n");
         }
@@ -193,15 +258,15 @@ bool esEnteroPositivo(const std::string &entrada)
         return false;
     for (char c : entrada)
     {
-        if (!std::isdigit(c))
+        if (!isdigit(c))
             return false;
     }
     return true;
 }
 
-int leerEnteroPositivo(const std::string &mensaje)
+int leerEnteroPositivo(const string &mensaje)
 {
-    std::string entrada;
+    string entrada;
     int numero;
 
     while (true)
@@ -211,15 +276,15 @@ int leerEnteroPositivo(const std::string &mensaje)
 
         if (esEnteroPositivo(entrada))
         {
-            numero = std::stoi(entrada); // Convertir a entero
-            if (numero > 0)              // Verificar que sea positivo
+            numero = stoi(entrada); // Convertir a entero
+            if (numero > 0)         // Verificar que sea positivo
                 return numero;
         }
-        std::cout << "Por favor, ingrese un número entero positivo válido." << std::endl;
+        cout << "Por favor, ingrese un número entero positivo válido." << endl;
     }
 }
 
 void LimpiarPantalla()
 {
-    std::cout << "\033[2J\033[1;1H" << std::flush;
-} // Limpia y posiciona el cursor
+    cout << "\033[2J\033[1;1H" << flush;
+}
