@@ -1,11 +1,15 @@
 #include <iostream>
 #include <vector>
-
+#include <fstream>
 
 using namespace std;
 
 
 int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas); // Para contar vecinos vivos.
+vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int filas, int columnas);
+
+void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int filas, int columnas);
+
 
 int main()
 {
@@ -39,7 +43,56 @@ int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, i
 }
 
 
+vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int filas, int columnas)
+{
+    vector<vector<int>> nuevoTablero(filas, vector<int>(columnas, 0)); // Usar tamaño de tablero
 
+    for (int i = 0; i < filas; ++i)
+    {
+        for (int j = 0; j < columnas; ++j)
+        {
+            int vecinos = contarVecinos(tablero, i, j, filas, columnas);
 
+            // Aplicar las reglas del Juego de la Vida
+            if (tablero[i][j] == 1)
+            { // Célula viva
+                if (vecinos == 2 || vecinos == 3)
+                {
+                    nuevoTablero[i][j] = 1; // Permanece viva
+                }
+            }
+            else
+            { // Célula muerta
+                if (vecinos == 3)
+                {
+                    nuevoTablero[i][j] = 1; // Revive
+                }
+            }
+        }
+    }
 
-    
+    return nuevoTablero;
+}
+
+void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int filas, int columnas)
+{
+    ofstream file("estadisticasprueba.txt", ios::app);
+    if (file.is_open())
+    {
+        file << "Generación: " << generacion << endl;
+        int celulasvivas = 0;
+        for (int i = 0; i < filas; ++i)
+        {
+            for (int j = 0; j < columnas; ++j)
+            {
+                if (tablero[i][j] == 1)
+                {
+                    celulasvivas++;
+                }
+            }
+        }
+        file << "Células vivas: " << celulasvivas << endl;
+        file << "--------------------------\n";
+        file.close();
+    }
+}    
