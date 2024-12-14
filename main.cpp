@@ -22,8 +22,6 @@ void LimpiarPantalla();
 
 int main()
 {
-    bool enEjecucion = true;
-
     int opcion = 0;
 
     do
@@ -33,8 +31,19 @@ int main()
         cout << "1. Jugar Juego de la vida\n";
         cout << "2. Personalizar Coordenadas\n";
         cout << "3. Salir\n";
-        cout << "Seleccione una opción: ";
-        cin >> opcion;
+
+        string entrada;
+        cout << "Seleccione una opción (1-3): ";
+        cin >> entrada;
+
+        // Validar que la entrada sea un número entero positivo
+        if (!esEnteroPositivo(entrada) || entrada.size() > 1 || (entrada[0] < '1' || entrada[0] > '3'))
+        {
+            cout << "Por favor, ingrese un número válido (1, 2 o 3)." << endl;
+            continue;
+        }
+
+        opcion = stoi(entrada); // Convertir la entrada a entero
 
         switch (opcion)
         {
@@ -48,13 +57,6 @@ int main()
 
             while (true)
             {
-                manejarPausa(enEjecucion);
-
-                if (!enEjecucion)
-                {
-                    this_thread::sleep_for(chrono::milliseconds(500));
-                    continue;
-                }
                 generacion++;
                 imprimirTablero(tablero, generacion);                    // Llamada a la función que imprimirá el tablero.
                 tablero = siguienteGeneracion(tablero, filas, columnas); // Llamada para calcular la siguiente generación.
@@ -80,23 +82,22 @@ int main()
         case 3:
             cout << "\nSaliendo del programa." << endl;
             break;
-        default:
-            cout << endl;
-            cout << "La opcion ingresada no esta dentro del menu" << endl;
-            break;
         }
+
     } while (opcion != 3);
 
     return 0;
 }
 
+
 int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas)
 {
     int count = 0;
 
-    for (int i = -1; i <= 1; i++)
+
+    for (int i = -1; i <= 1; i++) 
     {
-        for (int j = -1; j <= 1; j++)
+        for (int j = -1; j <= 1; j++) 
         {
             if (i == 0 && j == 0)
                 continue; // No contar la celda actual
@@ -172,6 +173,7 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
 void imprimirTablero(const vector<vector<int>> &tablero, int &generacion)
 {
     LimpiarPantalla();
+
 
     cout << "Generación: " << generacion << endl;
 
@@ -285,6 +287,7 @@ int leerEnteroPositivo(const string &mensaje)
 }
 
 void LimpiarPantalla()
+
 {
     cout << "\033[2J\033[1;1H" << flush;
 }
