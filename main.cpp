@@ -94,6 +94,7 @@ int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, i
 {
     int count = 0;
 
+
     for (int i = -1; i <= 1; i++) 
     {
         for (int j = -1; j <= 1; j++) 
@@ -172,6 +173,7 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
 void imprimirTablero(const vector<vector<int>> &tablero, int &generacion)
 {
     LimpiarPantalla();
+
 
     cout << "Generación: " << generacion << endl;
 
@@ -285,6 +287,7 @@ int leerEnteroPositivo(const string &mensaje)
 }
 
 void LimpiarPantalla()
+
 {
     cout << "\033[2J\033[1;1H" << flush;
 }
