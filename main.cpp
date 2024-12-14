@@ -92,11 +92,11 @@ int main()
 
 int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas)
 {
-    int count = 0; // Inicializamos el contador en 0. Este contador llevará el número de vecinos.
+    int count = 0;
 
-    for (int i = -1; i <= 1; i++) //bucle exterior que recorre las filas adyacentes
+    for (int i = -1; i <= 1; i++) 
     {
-        for (int j = -1; j <= 1; j++) // Bucle interior que recorre las columnas adyacentes
+        for (int j = -1; j <= 1; j++) 
         {
             if (i == 0 && j == 0)
                 continue; // No contar la celda actual
@@ -171,7 +171,7 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
 
 void imprimirTablero(const vector<vector<int>> &tablero, int &generacion)
 {
-   // LimpiarPantalla();
+    LimpiarPantalla();
 
     cout << "Generación: " << generacion << endl;
 
@@ -284,7 +284,7 @@ int leerEnteroPositivo(const string &mensaje)
     }
 }
 
-/*void LimpiarPantalla()
+void LimpiarPantalla()
 {
     cout << "\033[2J\033[1;1H" << flush;
-}*/
+}
