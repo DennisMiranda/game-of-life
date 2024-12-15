@@ -28,7 +28,7 @@ int main()
     {
         cout << "  JUEGO DE LA VIDA " << endl;
         cout << "\n--- Menú ---\n";
-        cout << "1. Jugar Juego de la vida\n";
+        cout << "1. Jugar Game of life\n";
         cout << "2. Personalizar Coordenadas\n";
         cout << "3. Salir\n";
 
@@ -50,10 +50,34 @@ int main()
         case 1:
         {
             int generacion = 0;
-            int filas = leerEnteroPositivo("Ingrese el número de filas (entero positivo): ");
-            int columnas = leerEnteroPositivo("Ingrese el número de columnas (entero positivo): ");
+            int filas = 10;
+            int columnas = 36;
             vector<vector<int>> tablero(filas, vector<int>(columnas, 0));
-            cargarTableroDesdeArchivo(tablero, "Coordenadas.txt", filas, columnas);
+
+            int figura;
+            cout << "Elige una opción:" << endl
+                 << "1. Nave Ligera" << endl
+                 << "2. Pistola de Gosper" << endl
+                 << "3. Estatico" << endl
+                 << "4. Personalizado" << endl;
+
+            cin >> figura;
+            if (figura == 1)
+            {
+                cargarTableroDesdeArchivo(tablero, "Coordenadas1.txt", filas, columnas);
+            }
+            else if (figura == 2)
+            {
+                cargarTableroDesdeArchivo(tablero, "Coordenadas2.txt", filas, columnas);
+            }
+            else if (figura == 3)
+            {
+                cargarTableroDesdeArchivo(tablero, "Coordenadas3.txt", filas, columnas);
+            }
+            else
+            {
+                cargarTableroDesdeArchivo(tablero, "Coordenadas.txt", filas, columnas);
+            }
 
             while (true)
             {
@@ -62,7 +86,7 @@ int main()
                 tablero = siguienteGeneracion(tablero, filas, columnas); // Llamada para calcular la siguiente generación.
                 this_thread::sleep_for(chrono::milliseconds(500));       // Pausa entre generaciones
 
-                if (generacion == 20)
+                if (generacion == 15)
                     break;
             }
 
@@ -72,9 +96,7 @@ int main()
         }
         case 2:
         {
-            int filas = leerEnteroPositivo("Ingrese el número de filas (entero positivo): ");
-            int columnas = leerEnteroPositivo("Ingrese el número de columnas (entero positivo): ");
-            vector<vector<int>> tablero(filas, vector<int>(columnas, 0));
+            vector<vector<int>> tablero(0, vector<int>(0, 0));
             editarTablero(tablero);
 
             break;
@@ -89,15 +111,13 @@ int main()
     return 0;
 }
 
-
 int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas)
 {
     int count = 0;
 
-
-    for (int i = -1; i <= 1; i++) 
+    for (int i = -1; i <= 1; i++)
     {
-        for (int j = -1; j <= 1; j++) 
+        for (int j = -1; j <= 1; j++)
         {
             if (i == 0 && j == 0)
                 continue; // No contar la celda actual
@@ -173,7 +193,6 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
 void imprimirTablero(const vector<vector<int>> &tablero, int &generacion)
 {
     LimpiarPantalla();
-
 
     cout << "Generación: " << generacion << endl;
 
@@ -273,8 +292,8 @@ int leerEnteroPositivo(const string &mensaje)
 
     while (true)
     {
-        std::cout << mensaje;
-        std::cin >> entrada;
+        cout << mensaje;
+        cin >> entrada;
 
         if (esEnteroPositivo(entrada))
         {
