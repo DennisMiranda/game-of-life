@@ -19,6 +19,8 @@ void manejarPausa(bool &enEjecucion);
 bool esEnteroPositivo(const string &entrada);
 int leerEnteroPositivo(const string &mensaje);
 void LimpiarPantalla();
+void iniciarJuego();
+void cargarConfigDesdeArchivo(const string &archivo, int &filas, int &columnas);
 
 int main()
 {
@@ -26,7 +28,7 @@ int main()
 
     do
     {
-        cout << "  JUEGO DE LA VIDA " << endl;
+        cout << "  BIENVENIDOS AL JUEGO DE LA VIDA " << endl;
         cout << "\n--- Menú ---\n";
         cout << "1. Jugar Game of life\n";
         cout << "2. Personalizar Coordenadas\n";
@@ -49,48 +51,7 @@ int main()
         {
         case 1:
         {
-            int generacion = 0;
-            int filas = 10;
-            int columnas = 36;
-            vector<vector<int>> tablero(filas, vector<int>(columnas, 0));
-
-            int figura;
-            cout << "Elige una opción:" << endl
-                 << "1. Nave Ligera" << endl
-                 << "2. Pistola de Gosper" << endl
-                 << "3. Estatico" << endl
-                 << "4. Personalizado" << endl;
-
-            cin >> figura;
-            if (figura == 1)
-            {
-                cargarTableroDesdeArchivo(tablero, "Coordenadas1.txt", filas, columnas);
-            }
-            else if (figura == 2)
-            {
-                cargarTableroDesdeArchivo(tablero, "Coordenadas2.txt", filas, columnas);
-            }
-            else if (figura == 3)
-            {
-                cargarTableroDesdeArchivo(tablero, "Coordenadas3.txt", filas, columnas);
-            }
-            else
-            {
-                cargarTableroDesdeArchivo(tablero, "Coordenadas.txt", filas, columnas);
-            }
-
-            while (true)
-            {
-                generacion++;
-                imprimirTablero(tablero, generacion);                    // Llamada a la función que imprimirá el tablero.
-                tablero = siguienteGeneracion(tablero, filas, columnas); // Llamada para calcular la siguiente generación.
-                this_thread::sleep_for(chrono::milliseconds(500));       // Pausa entre generaciones
-
-                if (generacion == 15)
-                    break;
-            }
-
-            guardarEstadisticas(generacion, tablero, filas, columnas);
+            iniciarJuego();
 
             break;
         }
@@ -210,6 +171,27 @@ void editarTablero(vector<vector<int>> &tablero)
 {
 
     int cantidadVivas = 0;
+    int filas = 0, columnas = 0;
+
+    cout << "Ingresa el tamaño de filas: ";
+    cin >> filas;
+    cout << "Ingresa el tamaño de columnas: ";
+    cin >> columnas;
+
+    ofstream archivoConfigTablero("ConfiguracionTablero.txt");
+    if (archivoConfigTablero.is_open())
+    {
+        archivoConfigTablero << filas << " " << columnas << endl;
+
+        archivoConfigTablero.close();
+        cout << "\nLas coordenadas fueron guardadas en 'ConfiguracionTablero.txt'." << endl;
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo para escribir." << endl;
+    }
+
+    //-----------------------------
 
     cout << "Ingresa la cantidad de celulas vivas: ";
     cin >> cantidadVivas;
@@ -245,6 +227,12 @@ void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archi
     {
         cerr << "Error al abrir el archivo." << endl;
         return;
+    }
+
+    tablero.resize(filas);
+    for (int i = 0; i < filas; i++)
+    {
+        tablero[i].resize(columnas);
     }
 
     int x, y;
@@ -309,4 +297,90 @@ void LimpiarPantalla()
 
 {
     cout << "\033[2J\033[1;1H" << flush;
+}
+
+void iniciarJuego()
+{
+    int generacion = 0;
+    int filas = 0;
+    int columnas = 0;
+    vector<vector<int>> tablero(filas, vector<int>(columnas, 0));
+
+    int figura;
+    cout << "Elige una opción:" << endl
+         << "1. Nave Ligera" << endl
+         << "2. Pistola de Gosper" << endl
+         << "3. Estatico" << endl
+         << "4. Personalizado" << endl;
+    cin >> figura;
+    switch (figura)
+    {
+    case 1:
+        filas = 15;
+        columnas = 20;
+        cargarTableroDesdeArchivo(tablero, "Coordenadas1.txt", filas, columnas);
+        break;
+    case 2:
+        filas = 20;
+        columnas = 38;
+        cargarTableroDesdeArchivo(tablero, "Coordenadas2.txt", filas, columnas);
+        break;
+    case 3:
+        filas = 18;
+        columnas = 20;
+        cargarTableroDesdeArchivo(tablero, "Coordenadas3.txt", filas, columnas);
+        break;
+    case 4:
+        cargarConfigDesdeArchivo("ConfiguracionTablero.txt", filas, columnas);
+        cargarTableroDesdeArchivo(tablero, "Coordenadas.txt", filas, columnas);
+        break;
+    default:
+        cout << "La opción ingresada no es válida";
+        break;
+    }
+
+    while (true)
+    {
+        generacion++;
+        imprimirTablero(tablero, generacion);                    // Llamada a la función que imprimirá el tablero.
+        tablero = siguienteGeneracion(tablero, filas, columnas); // Llamada para calcular la siguiente generación.
+        this_thread::sleep_for(chrono::milliseconds(500));       // Pausa entre generaciones
+
+        bool existenCelulasVivas = false;
+        for (int i = 0; i < filas; i++)
+        {
+            for (int j = 0; j < columnas; j++)
+            {
+                if (tablero[i][j] == 1)
+                {
+                    existenCelulasVivas = true;
+                    break;
+                }
+            }
+            if (existenCelulasVivas == true)
+            {
+                break;
+            }
+        }
+        if (existenCelulasVivas == false || generacion == 50)
+        {
+            break;
+        }
+    }
+
+    guardarEstadisticas(generacion, tablero, filas, columnas);
+}
+
+void cargarConfigDesdeArchivo(const string &archivo, int &filas, int &columnas)
+{
+    ifstream archivoConfig(archivo);
+    if (!archivoConfig.is_open())
+    {
+        cerr << "Error al abrir el archivo." << endl;
+        return;
+    }
+
+    archivoConfig >> filas >> columnas;
+
+    archivoConfig.close();
 }
