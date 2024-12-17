@@ -17,7 +17,7 @@ void editarTablero(vector<vector<int>> &tablero);
 void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archivo, int filas, int columnas);
 void manejarPausa(bool &enEjecucion);
 bool esEnteroPositivo(const string &entrada);
-int leerEnteroPositivo(const string &mensaje);
+int leerEnteroEnRango(int min, int max);
 void LimpiarPantalla();
 void iniciarJuego();
 void cargarConfigDesdeArchivo(const string &archivo, int &filas, int &columnas);
@@ -169,41 +169,92 @@ void imprimirTablero(const vector<vector<int>> &tablero, int &generacion)
 
 void editarTablero(vector<vector<int>> &tablero)
 {
-
     int cantidadVivas = 0;
     int filas = 0, columnas = 0;
 
-    cout << "Ingresa el tamaño de filas: ";
-    cin >> filas;
-    cout << "Ingresa el tamaño de columnas: ";
-    cin >> columnas;
+    // Pedir el tamaño de filas y columnas con validación
 
+    cout << "Ingrese  la cantidad de filas: " << endl;
+    filas = leerEnteroEnRango(1, 40); // Usamos leerEnteroEnRango para validar el tamaño
+    cout << "Ingrese  la cantidad de columnas: " << endl;
+    columnas = leerEnteroEnRango(1, 40); // Rango de 1 a 100 como ejemplo
+
+    // Guardar la configuración en un archivo
     ofstream archivoConfigTablero("ConfiguracionTablero.txt");
     if (archivoConfigTablero.is_open())
     {
         archivoConfigTablero << filas << " " << columnas << endl;
-
         archivoConfigTablero.close();
-        cout << "\nLas coordenadas fueron guardadas en 'ConfiguracionTablero.txt'." << endl;
+        cout << "\nEl tablero fue guardado en 'ConfiguracionTablero.txt'." << endl;
     }
     else
     {
         cout << "No se pudo abrir el archivo para escribir." << endl;
     }
 
-    //-----------------------------
+    // Pedir la cantidad de células vivas
+    cout << "Ingrese  la cantidad de celulas vivas: " << endl;
+    cantidadVivas = leerEnteroEnRango(1, filas + 1); // Validar que esté entre 1 y el número de filas
 
-    cout << "Ingresa la cantidad de celulas vivas: ";
-    cin >> cantidadVivas;
+    // Limpiar el buffer de entrada antes de leer con getline
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
+    // Pedir las coordenadas de las células vivas
     for (int i = 0; i < cantidadVivas; ++i)
     {
-        int x, y;
-        cout << "Ingrese la coordenada " << i + 1 << " (x y) de la celula viva: ";
-        cin >> x >> y;
-        tablero.push_back({x, y});
+        string entrada;
+        int x = -1, y = -1;
+
+        cout << endl;
+        bool coordenadaValida = false;
+
+        // Validar las coordenadas
+        while (!coordenadaValida)
+        {
+            cout << "Ingrese la coordenada " << i + 1 << " (x y) de la celula viva: ";
+
+            getline(cin, entrada); // Leer toda la línea
+
+            // Si la entrada está vacía, continuar
+            if (entrada.empty())
+                continue;
+
+            // Comprobar que el formato sea válido (solo números)
+            size_t espacio = entrada.find(" ");
+            if (espacio != string::npos)
+            {
+                string xStr = entrada.substr(0, espacio);
+                string yStr = entrada.substr(espacio + 1);
+
+                if (esEnteroPositivo(xStr) && esEnteroPositivo(yStr))
+                {
+                    x = stoi(xStr);
+                    y = stoi(yStr);
+
+                    // Verificar que las coordenadas estén dentro del rango
+                    if (x >= 0 && x < filas && y >= 0 && y < columnas)
+                    {
+                        coordenadaValida = true;
+                        tablero.push_back({x, y}); // Guardar las coordenadas
+                    }
+                    else
+                    {
+                        cout << "Coordenadas fuera de rango. Intenta de nuevo.\n";
+                    }
+                }
+                else
+                {
+                    cout << "Solo se permiten números enteros positivos. Intenta de nuevo.\n";
+                }
+            }
+            else
+            {
+                cout << "Formato incorrecto. Debes ingresar dos números separados por espacio.\n";
+            }
+        }
     }
 
+    // Guardar las coordenadas en un archivo
     ofstream archivoEditado("Coordenadas.txt");
     if (archivoEditado.is_open())
     {
@@ -273,24 +324,29 @@ bool esEnteroPositivo(const std::string &entrada)
     return true;
 }
 
-int leerEnteroPositivo(const string &mensaje)
+int leerEnteroEnRango(int min, int max)
 {
     string entrada;
-    int numero;
+    int numero = -1;
 
     while (true)
     {
-        cout << mensaje;
+        cout << "numero entero positivo entre " << min << " y " << max << ": ";
         cin >> entrada;
 
         if (esEnteroPositivo(entrada))
         {
-            numero = stoi(entrada); // Convertir a entero
-            if (numero > 0)         // Verificar que sea positivo
-                return numero;
+            numero = stoi(entrada);
+            if (numero >= min && numero <= max)
+            {
+                break;
+            }
         }
-        cout << "Por favor, ingrese un número entero positivo válido." << endl;
+
+        cout << "Entrada inválida. Intenta de nuevo.\n";
     }
+
+    return numero;
 }
 
 void LimpiarPantalla()
@@ -306,37 +362,45 @@ void iniciarJuego()
     int columnas = 0;
     vector<vector<int>> tablero(filas, vector<int>(columnas, 0));
 
-    int figura;
+    // Mostrar el menú antes de la validación
     cout << "Elige una opción:" << endl
          << "1. Nave Ligera" << endl
          << "2. Pistola de Gosper" << endl
          << "3. Estatico" << endl
          << "4. Personalizado" << endl;
-    cin >> figura;
+
+    // Usamos la función leerEnteroEnRango para elegir una opción válida entre 1 y 4
+    int figura = leerEnteroEnRango(1, 4);
+
     switch (figura)
     {
     case 1:
         filas = 15;
         columnas = 20;
+        tablero.resize(filas, vector<int>(columnas, 0));
         cargarTableroDesdeArchivo(tablero, "Coordenadas1.txt", filas, columnas);
         break;
     case 2:
         filas = 20;
         columnas = 38;
+        tablero.resize(filas, vector<int>(columnas, 0));
         cargarTableroDesdeArchivo(tablero, "Coordenadas2.txt", filas, columnas);
         break;
     case 3:
         filas = 18;
         columnas = 20;
+        tablero.resize(filas, vector<int>(columnas, 0));
         cargarTableroDesdeArchivo(tablero, "Coordenadas3.txt", filas, columnas);
         break;
     case 4:
         cargarConfigDesdeArchivo("ConfiguracionTablero.txt", filas, columnas);
+        tablero.resize(filas, vector<int>(columnas, 0));
         cargarTableroDesdeArchivo(tablero, "Coordenadas.txt", filas, columnas);
         break;
     default:
-        cout << "La opción ingresada no es válida";
-        break;
+        // Aunque este caso nunca debería ser alcanzado por la validación previa
+        cout << "La opción ingresada no es válida" << endl;
+        return;
     }
 
     while (true)
@@ -357,12 +421,12 @@ void iniciarJuego()
                     break;
                 }
             }
-            if (existenCelulasVivas == true)
+            if (existenCelulasVivas)
             {
                 break;
             }
         }
-        if (existenCelulasVivas == false || generacion == 50)
+        if (!existenCelulasVivas || generacion == 50)
         {
             break;
         }

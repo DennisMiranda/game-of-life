@@ -1,0 +1,5 @@
+Coordenadas.txt
+# Ignorar archivos ejecutables y compilados
+*.exe
+*.o
+*.out
