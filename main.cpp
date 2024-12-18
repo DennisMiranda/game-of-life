@@ -5,11 +5,11 @@
 #include <string>
 #include <chrono>
 #include <thread>
-#include <cctype> // Para std::isdigit
+#include <cctype> // Para isdigit
 
 using namespace std;
 
-int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas); // Para contar vecinos vivos.
+int contarVecinos(const vector<vector<int>> &tablero, int x, int y, int filas, int columnas);
 vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int filas, int columnas);
 void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int filas, int columnas);
 void imprimirTablero(const vector<vector<int>> &tablero, int &generacion);
@@ -25,11 +25,16 @@ void cargarConfigDesdeArchivo(const string &archivo, int &filas, int &columnas);
 int main()
 {
     int opcion = 0;
-
+    bool mostrarBienvenida = true;
     do
     {
-        cout << "  BIENVENIDOS AL JUEGO DE LA VIDA " << endl;
-        cout << "\n--- Menú ---\n";
+        if (mostrarBienvenida)
+        {
+            cout << "\n  BIENVENIDOS AL JUEGO DE LA VIDA " << endl;
+            mostrarBienvenida = false;
+        }
+
+        cout << "\n    Menú    \n";
         cout << "1. Jugar Game of life\n";
         cout << "2. Personalizar Coordenadas\n";
         cout << "3. Salir\n";
@@ -194,7 +199,7 @@ void editarTablero(vector<vector<int>> &tablero)
 
     // Pedir la cantidad de células vivas
     cout << "Ingrese  la cantidad de celulas vivas: " << endl;
-    cantidadVivas = leerEnteroEnRango(1, filas + 1); // Validar que esté entre 1 y el número de filas
+    cantidadVivas = leerEnteroEnRango(1, filas * columnas); // Validar que esté entre 1 y el número total de celdas
 
     // Limpiar el buffer de entrada antes de leer con getline
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -211,7 +216,7 @@ void editarTablero(vector<vector<int>> &tablero)
         // Validar las coordenadas
         while (!coordenadaValida)
         {
-            cout << "Ingrese la coordenada " << i + 1 << " (x y) de la celula viva: ";
+            cout << "Ingrese la coordenada (x y) de la celula viva " << i + 1 << ": ";
 
             getline(cin, entrada); // Leer toda la línea
 
@@ -280,11 +285,7 @@ void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archi
         return;
     }
 
-    tablero.resize(filas);
-    for (int i = 0; i < filas; i++)
-    {
-        tablero[i].resize(columnas);
-    }
+    tablero.resize(filas, vector<int>(columnas, 0));
 
     int x, y;
     while (file >> x >> y)
@@ -300,8 +301,8 @@ void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archi
 
 void manejarPausa(bool &enEjecucion)
 {
-    if (kbhit())
-    {                         // Detecta si hay una tecla presionada
+    if (kbhit()) // Detecta si hay una tecla presionada
+    {
         char tecla = getch(); // Captura la tecla
         if (tecla == 'p')
         { // Si la tecla es 'p',cambia el estado
@@ -311,7 +312,7 @@ void manejarPausa(bool &enEjecucion)
     }
 }
 
-bool esEnteroPositivo(const std::string &entrada)
+bool esEnteroPositivo(const string &entrada)
 {
     // Verificar que la cadena no esté vacía y que todos sus caracteres sean dígitos
     if (entrada.empty())
@@ -328,10 +329,14 @@ int leerEnteroEnRango(int min, int max)
 {
     string entrada;
     int numero = -1;
+    bool mostrarValidacion = false;
 
     while (true)
     {
-        cout << "numero entero positivo entre " << min << " y " << max << ": ";
+        if (mostrarValidacion)
+        {
+            cout << "Ingrese un número entero positivo entre " << min << " y " << max << ": ";
+        }
         cin >> entrada;
 
         if (esEnteroPositivo(entrada))
@@ -344,6 +349,7 @@ int leerEnteroEnRango(int min, int max)
         }
 
         cout << "Entrada inválida. Intenta de nuevo.\n";
+        mostrarValidacion = true;
     }
 
     return numero;
@@ -357,17 +363,18 @@ void LimpiarPantalla()
 
 void iniciarJuego()
 {
-    int generacion = 0;
+    int generacion = 1;
     int filas = 0;
     int columnas = 0;
     vector<vector<int>> tablero(filas, vector<int>(columnas, 0));
 
     // Mostrar el menú antes de la validación
-    cout << "Elige una opción:" << endl
+    cout << "\n   Menú de patrones: " << endl
          << "1. Nave Ligera" << endl
          << "2. Pistola de Gosper" << endl
          << "3. Estatico" << endl
-         << "4. Personalizado" << endl;
+         << "4. Personalizado" << endl
+         << "Seleccione una opción (1-4): ";
 
     // Usamos la función leerEnteroEnRango para elegir una opción válida entre 1 y 4
     int figura = leerEnteroEnRango(1, 4);
@@ -377,24 +384,20 @@ void iniciarJuego()
     case 1:
         filas = 15;
         columnas = 20;
-        tablero.resize(filas, vector<int>(columnas, 0));
         cargarTableroDesdeArchivo(tablero, "Coordenadas1.txt", filas, columnas);
         break;
     case 2:
         filas = 20;
         columnas = 38;
-        tablero.resize(filas, vector<int>(columnas, 0));
         cargarTableroDesdeArchivo(tablero, "Coordenadas2.txt", filas, columnas);
         break;
     case 3:
         filas = 18;
         columnas = 20;
-        tablero.resize(filas, vector<int>(columnas, 0));
         cargarTableroDesdeArchivo(tablero, "Coordenadas3.txt", filas, columnas);
         break;
     case 4:
         cargarConfigDesdeArchivo("ConfiguracionTablero.txt", filas, columnas);
-        tablero.resize(filas, vector<int>(columnas, 0));
         cargarTableroDesdeArchivo(tablero, "Coordenadas.txt", filas, columnas);
         break;
     default:
@@ -403,12 +406,20 @@ void iniciarJuego()
         return;
     }
 
+    bool enEjecucion = true;
     while (true)
     {
-        generacion++;
+        manejarPausa(enEjecucion);
+        if (!enEjecucion)
+        {
+            this_thread::sleep_for(chrono::milliseconds(500));
+            continue;
+        }
         imprimirTablero(tablero, generacion);                    // Llamada a la función que imprimirá el tablero.
         tablero = siguienteGeneracion(tablero, filas, columnas); // Llamada para calcular la siguiente generación.
-        this_thread::sleep_for(chrono::milliseconds(500));       // Pausa entre generaciones
+        generacion++;
+
+        this_thread::sleep_for(chrono::milliseconds(500));
 
         bool existenCelulasVivas = false;
         for (int i = 0; i < filas; i++)
@@ -431,7 +442,7 @@ void iniciarJuego()
             break;
         }
     }
-
+    imprimirTablero(tablero, generacion); // Llamada a la función que imprimirá la última generación
     guardarEstadisticas(generacion, tablero, filas, columnas);
 }
 
