@@ -313,7 +313,7 @@ void manejarPausaAndStop(bool &enEjecucion)
         {
             enEjecucion = !enEjecucion;
             cout << (enEjecucion ? "Juego Cancelado!!!. \n" : "Cancelado Volver a Iniciar !!! \n");
-             iniciarJuego();
+            main();
         }
     }
 }
