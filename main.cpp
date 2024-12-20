@@ -6,6 +6,7 @@
 #include <chrono>
 #include <thread>
 #include <cctype> // Para isdigit
+#include <iomanip> // Para std::setfill y std::setw
 
 using namespace std;
 
@@ -138,7 +139,20 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
     ofstream file("estadisticasprueba.txt", ios::app);
     if (file.is_open())
     {
+
+         time_t ahora = time(0);
+        tm* tiempoLocal = localtime(&ahora);
+
+        file << "Fecha: " << setfill('0') << setw(2) << tiempoLocal->tm_mday << "/"
+             << setfill('0') << setw(2) << (tiempoLocal->tm_mon + 1) << "/"
+             << (tiempoLocal->tm_year + 1900) << " - Hora: "
+             << setfill('0') << setw(2) << tiempoLocal->tm_hour << ":"
+             << setfill('0') << setw(2) << tiempoLocal->tm_min << ":"
+             << setfill('0') << setw(2) << tiempoLocal->tm_sec << endl;
+
+
         file << "Generación: " << generacion << endl;
+
         int celulasvivas = 0;
         for (int i = 0; i < filas; ++i)
         {
@@ -153,6 +167,8 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
         file << "Células vivas: " << celulasvivas << endl;
         file << "--------------------------\n";
         file.close();
+    } else {
+        cerr << "Error al abrir el archivo para guardar estadísticas." << endl;
     }
 }
 
