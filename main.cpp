@@ -15,7 +15,7 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
 void imprimirTablero(const vector<vector<int>> &tablero, int &generacion);
 void editarTablero(vector<vector<int>> &tablero);
 void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archivo, int filas, int columnas);
-void manejarPausaAndStop(bool &enEjecucion);
+int manejarPausaAndStop(bool &enEjecucion);
 bool esEnteroPositivo(const string &entrada);
 int leerEnteroEnRango(int min, int max);
 void LimpiarPantalla();
@@ -299,23 +299,22 @@ void cargarTableroDesdeArchivo(vector<vector<int>> &tablero, const string &archi
     file.close();
 }
 
-void manejarPausaAndStop(bool &enEjecucion)
+int manejarPausaAndStop(bool &enEjecucion)
 {
     if (kbhit()) // Detecta si hay una tecla presionada
     {
         char tecla = getch(); // Captura la tecla
         if (tecla == 'p')
-        { // Si la tecla es 'p',cambia el estado
+        { // Si la tecla es 'p', la generacion se pausa
             enEjecucion = !enEjecucion;
             cout << (enEjecucion ? "Juego reanudado.\n" : "Juego en pausa. Presiona 'p' para reanudar.\n");
         }
-        else if (tecla == 's')
+        else if (tecla == 's') // Si la tecla es 's', el juego regresa al menu principa
         {
-            enEjecucion = !enEjecucion;
-            cout << (enEjecucion ? "Juego Cancelado!!!. \n" : "Cancelado Volver a Iniciar !!! \n");
-            main();
+            return 1; // Salir
         }
     }
+    return 0; // no hacer nada
 }
 
 bool esEnteroPositivo(const string &entrada)
@@ -415,7 +414,12 @@ void iniciarJuego()
     bool enEjecucion = true;
     while (true)
     {
-        manejarPausaAndStop(enEjecucion);
+        int accionSalir = manejarPausaAndStop(enEjecucion);
+        if (accionSalir == 1)
+        {
+            break;
+        }
+
         if (!enEjecucion)
         {
             this_thread::sleep_for(chrono::milliseconds(500));
