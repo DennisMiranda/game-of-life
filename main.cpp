@@ -5,7 +5,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
-#include <cctype> // Para isdigit
+#include <cctype>  // Para isdigit
 #include <iomanip> // Para std::setfill y std::setw
 
 using namespace std;
@@ -136,12 +136,12 @@ vector<vector<int>> siguienteGeneracion(const vector<vector<int>> &tablero, int 
 
 void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int filas, int columnas)
 {
-    ofstream file("estadisticasprueba.txt", ios::app);
+    ofstream file("estadisticas.txt", ios::app);
     if (file.is_open())
     {
 
-         time_t ahora = time(0);
-        tm* tiempoLocal = localtime(&ahora);
+        time_t ahora = time(0);
+        tm *tiempoLocal = localtime(&ahora);
 
         file << "Fecha: " << setfill('0') << setw(2) << tiempoLocal->tm_mday << "/"
              << setfill('0') << setw(2) << (tiempoLocal->tm_mon + 1) << "/"
@@ -149,7 +149,6 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
              << setfill('0') << setw(2) << tiempoLocal->tm_hour << ":"
              << setfill('0') << setw(2) << tiempoLocal->tm_min << ":"
              << setfill('0') << setw(2) << tiempoLocal->tm_sec << endl;
-
 
         file << "Generación: " << generacion << endl;
 
@@ -167,7 +166,9 @@ void guardarEstadisticas(int generacion, const vector<vector<int>> &tablero, int
         file << "Células vivas: " << celulasvivas << endl;
         file << "--------------------------\n";
         file.close();
-    } else {
+    }
+    else
+    {
         cerr << "Error al abrir el archivo para guardar estadísticas." << endl;
     }
 }
@@ -391,7 +392,7 @@ void iniciarJuego()
 
     // Mostrar el menú antes de la validación
     cout << "\n   Menú de patrones: " << endl
-         << "1. Nave Ligera" << endl
+         << "1. Nave Espacial Ligera" << endl
          << "2. Pistola de Gosper" << endl
          << "3. Estatico" << endl
          << "4. Personalizado" << endl
@@ -445,6 +446,8 @@ void iniciarJuego()
         imprimirTablero(tablero, generacion);                    // Llamada a la función que imprimirá el tablero.
         tablero = siguienteGeneracion(tablero, filas, columnas); // Llamada para calcular la siguiente generación.
         generacion++;
+        cout << "Teclas especiales: " << endl
+             << "P: pausar - S: salir" << endl;
 
         this_thread::sleep_for(chrono::milliseconds(500));
 
@@ -464,7 +467,7 @@ void iniciarJuego()
                 break;
             }
         }
-        if (!existenCelulasVivas || generacion == 50)
+        if (!existenCelulasVivas)
         {
             break;
         }
