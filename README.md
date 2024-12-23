@@ -54,15 +54,15 @@ Selecciona la opción `1` para iniciar la simulación del juego.
 El programa te presentará un menú de patrones donde podrás elegir entre diferentes configuraciones predeterminadas del tablero:
 1. Nave Espacial Ligera: Una nave espacial ligera que se desplaza por el tablero.
 
-  ![Nave Ligera](.\docs\1.NaveEspacial.gif)
+  ![Nave Ligera](./docs/1.NaveEspacial.gif)
 
 2. Pistola de Gosper: Un patrón que genera una pistola de Gosper.
 
-  ![Nave Ligera](.\docs\2.PistolaGosper.gif)
+  ![Nave Ligera](./docs/2.PistolaGosper.gif)
 
 3. Estático: Un patrón estático predefinido.
 
-  ![Estatico](.\docs\3.Estatico.gif)
+  ![Estatico](./docs/3.Estatico.gif)
 
 4. Personalizado: Carga una configuración personalizada desde un archivo de texto.
 Después de elegir un patrón, el programa comenzará a ejecutar la simulación del Juego de la Vida, mostrando las generaciones en la consola. Cada generación se mostrará en el tablero hasta que no haya más células vivas o se presione la tecla 'S' para salir, este programa tiende a generaciones infinitas.
@@ -109,7 +109,7 @@ Estas coordenadas forman un patrón llamado **Pentadecathlon**, que es un ciclo 
 5 1
 5 2
 ``` 
-![Pentadeclathon](.\docs\1.SPenta.gif)
+![Pentadeclathon](./docs/1.SPenta.gif)
 
 
 ### Figura Glider Gun
@@ -129,7 +129,7 @@ El **Glider Gun** es una figura que produce un glider, el cual se desplaza a tra
 4 3
 4 4
 ```
-![Glider Gun](.\docs\2.SGliderGun.gif)
+![Glider Gun](./docs/2.SGliderGun.gif)
 
 ---
 
