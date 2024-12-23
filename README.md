@@ -30,6 +30,7 @@ El código está escrito en C++ y se organiza en un solo archivo principal `main
 - `.gitignore` se usa para decirle a Git qué archivos y carpetas no deben ser incluidos en el repositorio. Esto es útil para evitar subir archivos temporales, archivos de configuración local o cualquier archivo generado automáticamente que no sea relevante para el código fuente.
 - `coordenadas.txt`: Archivo de texto con las coordenadas Personalizadas iniciales de las células vivas.
 - `configuracionTablero.txt`: Archivo de texto que guarda el tamaño del tablero, que son filas y columnas.
+- `estadisticas.txt`: Archivo de texto que almacena las estadísticas del programa, como el número de generaciones, el número de células vivas y la fecha y hora en que se ejecutó el programa.
 
 
 
@@ -46,29 +47,37 @@ Cuando ejecutes el programa, verás el siguiente menú principal:
 
 Seleccione una opción (1-3):
 ```
-Opciones del menú
-Jugar Game of Life
+### Opciones del menú 
+#### 1. Jugar Game of Life
 
 Selecciona la opción `1` para iniciar la simulación del juego.
-El programa te presentará un menú de patrones donde podrás elegir
+El programa te presentará un menú de patrones donde podrás elegir entre diferentes configuraciones predeterminadas del tablero:
+1. Nave Espacial Ligera: Una nave espacial ligera que se desplaza por el tablero.
 
-entre diferentes configuraciones predeterminadas del tablero:
-1. Nave Ligera: Una nave ligera que se desplaza por el tablero.
+  ![Nave Ligera](docs\1.NaveEspacial.gif)
+
+
 2. Pistola de Gosper: Un patrón que genera una pistola de Gosper.
+
+  ![Nave Ligera](docs\2.PistolaGosper.gif)
+
 3. Estático: Un patrón estático predefinido.
+
+  ![Estatico](docs\3.Estatico.gif)
+
 4. Personalizado: Carga una configuración personalizada desde un archivo de texto.
-Después de elegir un patrón, el programa comenzará a ejecutar la simulación del Juego de la Vida, mostrando las generaciones en la consola. Cada generación se mostrará en el tablero hasta que no haya más células vivas o se alcance un límite de 50 generaciones.
+Después de elegir un patrón, el programa comenzará a ejecutar la simulación del Juego de la Vida, mostrando las generaciones en la consola. Cada generación se mostrará en el tablero hasta que no haya más células vivas o se presione la tecla 'S' para salir, este programa tiende a generaciones infinitas.
 
 
 
-### Personalizar Coordenadas
+#### 2. Personalizar Coordenadas
 Selecciona la opción `2` para definir las coordenadas iniciales del tablero.
 El programa te pedirá que ingreses las dimensiones del tablero (número de filas y columnas) y la cantidad de células vivas.
 Luego, podrás ingresar las coordenadas (x, y) de cada célula viva. Las coordenadas se validarán para asegurarse de que estén dentro del rango del tablero.
 Después de ingresar las coordenadas, el tablero se guardará en un archivo de texto llamado Coordenadas.txt, que se usará en el futuro para cargar la configuración personalizada en el juego.
 
 
-### Salir
+#### 3. Salir
 Selecciona la opción `3` para cerrar el programa.
 
 ### Controles adicionales
@@ -84,7 +93,9 @@ A continuación, se presentan algunas figuras clásicas para usar como configura
 
 ### Figura Pentadecathlon
 
-Estas coordenadas forman un patrón llamado **Pentadecathlon**, que es un ciclo estable con 15 celdas.
+Estas coordenadas forman un patrón llamado **Pentadecathlon**, que es un ciclo estable con 15 celdas. Es un ciclo que se mantiene en su forma sin cambiar con el paso del tiempo.
+
+
 ```
 0 1
 0 2
@@ -99,30 +110,14 @@ Estas coordenadas forman un patrón llamado **Pentadecathlon**, que es un ciclo 
 5 1
 5 2
 ``` 
-
-### Figura Nave Espacial Pesada
-
-Este patrón, llamado **Nave Espacial Pesada**, es un tipo de nave que se mueve en la cuadrícula.
-
-```
-0 1
-0 2
-0 3
-0 4
-0 5
-1 0
-1 5
-2 5
-3 0
-3 4
-4 2
-4 3
-```
+![Pentadeclathon](docs\1.SPenta.gif)
 
 
 ### Figura Glider Gun
 
-El **Glider Gun** es una figura que produce un "desplazamiento" (un glider) que se mueve por la cuadrícula.
+El **Glider Gun** es una figura que produce un glider, el cual se desplaza a través de la cuadrícula.
+
+
 
 ```
 1 2
@@ -135,24 +130,11 @@ El **Glider Gun** es una figura que produce un "desplazamiento" (un glider) que 
 4 3
 4 4
 ```
-
-
----
-
-### Explicación:
-
-1. **Figura Pentadecathlon**: Un ciclo estable que se mantiene en su forma sin cambiar con el paso del tiempo.
-2. **Figura Nave Espacial Pesada**: Se mueve por la cuadrícula en cada ciclo.
-3. **Figura Glider Gun**: Produce un glider que se mueve a través de la cuadrícula.
+![Glider Gun](docs\2.SGliderGun.gif)
 
 ---
 
 
-## Juego de la Vida Animado
-
-| **Nave Ligera** | **Pistola Gosper** | **Estático** |
-|------------------|--------------------|--------------|
-| ![Nave Ligera](https://upload.wikimedia.org/wikipedia/commons/3/37/Game_of_life_animated_LWSS.gif) | ![Pistola Gosper](https://imgs.search.brave.com/Sty7umwtNmr1KcVLeQ1Cd5wErOOXGDheP_52vVov1xw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly92b25u/ZXVtYW5ubWFjaGlu/ZS5maWxlcy53b3Jk/cHJlc3MuY29tLzIw/MDkvMDEvZ29zcGVy/c19nbGlkZXJfZ3Vu/LmdpZj93PTYxNA.gif) | ![Estático](https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Game_of_life_block_with_border.svg/66px-Game_of_life_block_with_border.svg.png) |
 
 
 
