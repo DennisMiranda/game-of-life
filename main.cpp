@@ -403,8 +403,8 @@ void iniciarJuego()
     switch (figura)
     {
     case 1:
-        filas = 15;
-        columnas = 20;
+        filas = 10;
+        columnas = 10;
         cargarTableroDesdeArchivo(tablero, "Coordenadas1.txt", filas, columnas);
         break;
     case 2:
@@ -413,8 +413,8 @@ void iniciarJuego()
         cargarTableroDesdeArchivo(tablero, "Coordenadas2.txt", filas, columnas);
         break;
     case 3:
-        filas = 18;
-        columnas = 20;
+        filas = 10;
+        columnas = 10;
         cargarTableroDesdeArchivo(tablero, "Coordenadas3.txt", filas, columnas);
         break;
     case 4:

@@ -1,5 +1,8 @@
 Coordenadas.txt
+ConfiguracionTablero.txt
+estadisticasprueba.txt
 # Ignorar archivos ejecutables y compilados
 *.exe
 *.o
 *.out
+*.json
